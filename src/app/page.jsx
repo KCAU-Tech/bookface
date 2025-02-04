@@ -1,13 +1,28 @@
-"use client";
+"use client"
+
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://us-central1-bookface-backend.cloudfunctions.net/helloWorld");
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error("Error fetching function:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div>
-      <h1>KCAU Bookface</h1>
-      <p>
-        KCAU Bookface is a platform designed to enhance student interactions at
-        KCA University.
-      </p>
+      <h1>{data?.title || "Loading..."}</h1>
+      <p>{data?.message}</p>
     </div>
   );
 }
