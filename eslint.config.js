@@ -18,10 +18,8 @@ export default [
       "react-hooks": reactHooksPlugin,
       prettier: prettierPlugin, // Integrate Prettier plugin
     },
+    extends: ["next/core-web-vitals"],
     rules: {
-      // Next.js rules
-      "next/core-web-vitals": "off", // Adjusted to warn for better performance tracking
-
       // Import rules
       "import/first": "error", // Ensure imports are at the top
       "import/newline-after-import": "error", // Ensure a newline after imports
@@ -57,7 +55,6 @@ export default [
       "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }], // Allow unused args with `_`
       "no-console": ["warn", { allow: ["warn", "error"] }], // Allow warn/error
       quotes: ["error", "double"], // Enforce double quotes
-      semi: ["error", "always"], // Enforce semicolons
       indent: ["error", 2], // Enforce consistent indentation
 
       // Code quality rules
