@@ -9,8 +9,7 @@ on:
       - dev
 
 jobs:
-  build:
-    name: Deploy to Vercel
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
