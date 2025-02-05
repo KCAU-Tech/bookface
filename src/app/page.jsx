@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -21,6 +22,7 @@ export default function Home() {
 
   return (
     <div>
+      <Navbar />
       <h1>Home Page</h1>
       <h1>{data?.title || "Loading..."}</h1>
       <p>{data?.message}</p>
