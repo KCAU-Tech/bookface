@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Bookface Social Media Application
 
-## Getting Started
+## Running the Project Locally
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js(v22)
+- npm installed
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Setup Web Application
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/KCAU-Tech/bookface.git
+   cd bookface
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Start the development server:
+   ```sh
+   npm run dev
+   ```
+4. Open the application in a browser at:
+   ```
+   http://localhost:3000
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Contributing
 
-## Learn More
+- Fetch the latest updates.
+  ```sh
+  git fetch
+  ```
+- Create a feature branch out of dev branch.
+  ```sh
+  git checkout -b feature-branch-name dev
+  ```
+- Make changes to the code.
 
-To learn more about Next.js, take a look at the following resources:
+- Add the changes to staging area.
+  ```sh
+  git add .
+  ```
+- Commit changes.
+  ```sh
+  git commit -m "Short descriptive commit message"
+  ```
+- Push the changes to the feature branch.
+  ```sh
+  git push origin feature-branch-name
+  ```
+- Submit a pull request.
+  Go to [the pull requests page](https://github.com/KCAU-Tech/bookface/pulls) and create a pull request for your code with at least one reviewer.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Once your code is approved and merged to the `dev` branch. Your changes will be live on [the bookface url](https://bookface-eight.vercel.app/).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Happy Coding✨
