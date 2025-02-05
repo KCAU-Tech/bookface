@@ -21,6 +21,7 @@ export default function Home() {
 
   return (
     <div>
+      <h1>Home Page</h1>
       <h1>{data?.title || "Loading..."}</h1>
       <p>{data?.message}</p>
     </div>
