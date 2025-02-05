@@ -1,30 +1,27 @@
-# Bookface Social Media Application
+# Bookface Cloud Functions
 
-## Running the Project Locally
+## Running the Cloud Functions Locally
 
 ### Prerequisites
 
-- Node.js(v22)
+- Node.js (v22)
 - npm installed
+- Firebase CLI installed
 
-### Setup Web Application
+### Setup Cloud Functions
 
 1. Clone the repository:
    ```sh
    git clone https://github.com/KCAU-Tech/bookface.git
-   cd bookface
+   cd bookface/functions
    ```
 2. Install dependencies:
    ```sh
    npm install
    ```
-3. Start the development server:
+3. Start the Firebase emulator:
    ```sh
-   npm run dev
-   ```
-4. Open the application in a browser at:
-   ```
-   http://localhost:3000
+   firebase emulators:start
    ```
 
 ## Contributing
@@ -33,13 +30,13 @@
   ```sh
   git fetch
   ```
-- Create a feature branch out of dev branch.
+- Create a feature branch out of the `dev` branch.
   ```sh
   git checkout -b feature-branch-name dev
   ```
 - Make changes to the code.
 
-- Add the changes to staging area.
+- Add the changes to the staging area.
   ```sh
   git add .
   ```
@@ -52,8 +49,8 @@
   git push origin feature-branch-name
   ```
 - Submit a pull request.
-  Go to [the pull requests page](https://github.com/KCAU-Tech/bookface/pulls) and create a pull request for your code with at least one reviewer.
+  Go to [the pull requests page](https://github.com/KCAU-Tech/bookface-backend/pulls) and create a pull request for your code with at least one reviewer.
 
-Once your code is approved and merged to the `dev` branch. Your changes will be live on [the bookface url](https://bookface-eight.vercel.app/).
+Once your code is approved and merged to the `dev` branch, your changes will be live on [the Bookface URL](https://bookface-eight.vercel.app/) or should be accessible via the live api [endpoint](https://us-central1-bookface-backend.cloudfunctions.net/helloWorld).
 
-Happy Coding✨
+Happy Coding ✨
