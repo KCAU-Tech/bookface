@@ -1,9 +1,12 @@
-import React from 'react'
+import ProtectedRoute from "@/hoc/ProtectedRoutes";
+import React from "react";
 
 const ProfilePage = () => {
   return (
-    <div>Profile Page</div>
-  )
-}
+    <ProtectedRoute>
+      <div>Profile Page</div>
+    </ProtectedRoute>
+  );
+};
 
-export default ProfilePage
+export default ProfilePage;
