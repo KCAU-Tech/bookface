@@ -20,16 +20,10 @@ const InterestsSection = ({ onSelectionChange }) => {
 
   return (
     <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Select Your Interests</h3>
-        <span
-          className={`text-sm ${
-            selectedInterests.length < 5 ? "text-red-500" : "text-gray-500"
-          }`}
-        >
-          {selectedInterests.length}/10 selected
-        </span>
-      </div>
+      <h3 className="text-lg font-semibold">Select Your Interests</h3>
+      <p className="text-sm text-gray-500">
+        Choose at least 5 interests (max 10).
+      </p>
 
       <div className="flex flex-wrap gap-2">
         {Array.isArray(interests) &&
@@ -40,7 +34,7 @@ const InterestsSection = ({ onSelectionChange }) => {
               className={`px-4 py-2 rounded-full text-sm transition-all duration-200 
               ${
                 selectedInterests.includes(interest)
-                  ? "bg-blue-600 text-white"
+                  ? "bg-secondary text-white"
                   : "bg-gray-100 text-gray-800 hover:bg-gray-200"
               } 
               ${

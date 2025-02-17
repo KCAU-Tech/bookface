@@ -43,7 +43,7 @@ const ProfilePictureUpload = () => {
         />
         <label
           htmlFor="profile-upload"
-          className="mt-2 px-2 py-1 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 font-medium text-xs md:text-sm lg:text-base"
+          className="mt-2 px-2 py-1 bg-primary text-white rounded-md cursor-pointer hover:bg-primary-light font-medium text-xs md:text-sm lg:text-base"
         >
           Upload Photo
         </label>

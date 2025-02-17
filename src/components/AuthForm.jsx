@@ -1,5 +1,7 @@
+// AuthForm.jsx
+
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { auth } from "@/lib/firebase";
 import {
   signInWithEmailAndPassword,
@@ -12,6 +14,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContextProvider";
 import { courses } from "@/utils/kcauCourses";
+import { getAuthErrorMessage } from "@/utils/authErrors";
 
 const authSchema = z.object({
   email: z
@@ -31,15 +34,25 @@ const authSchema = z.object({
       /[^A-Za-z0-9]/,
       "Password must contain at least one special character"
     ),
-  firstName: z.string().min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters"),
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  firstName: z
+    .string()
+    .min(2, "First name must be at least 2 characters")
+    .optional(),
+  lastName: z
+    .string()
+    .min(2, "Last name must be at least 2 characters")
+    .optional(),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters")
+    .optional(),
   course: z
     .string()
     .nonempty("Please select a course")
     .refine((val) => courses.includes(val), {
       message: "Please select a valid course",
-    }),
+    })
+    .optional(),
 });
 
 const AuthForm = () => {
@@ -47,8 +60,8 @@ const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showCourseSuggestions, setShowCourseSuggestions] = useState(false);
-  const { user } = useAuth();
   const router = useRouter();
+  const { user } = useAuth();
 
   const {
     register,
@@ -59,14 +72,7 @@ const AuthForm = () => {
     setValue,
   } = useForm({
     resolver: zodResolver(authSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      firstName: "",
-      lastName: "",
-      username: "",
-      course: "",
-    },
+    mode: "onSubmit",
   });
 
   const courseInputValue = watch("course");
@@ -74,19 +80,25 @@ const AuthForm = () => {
     course.toLowerCase().includes((courseInputValue || "").toLowerCase())
   );
 
-  if (user) {
-    router.push("/");
-  }
-
   const onSubmit = async (data) => {
     setError(null);
     setIsLoading(true);
 
     try {
       if (isLogin) {
-        await signInWithEmailAndPassword(auth, data.email, data.password);
-        setIsLoading(false);
-        router.push("/");
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          data.email,
+          data.password
+        );
+        const user = userCredential.user;
+        if (!user.emailVerified) {
+          setIsLoading(false);
+          router.push("/auth/verify-email");
+        } else {
+          setIsLoading(false);
+          router.push("/");
+        }
       } else {
         const userCredential = await createUserWithEmailAndPassword(
           auth,
@@ -95,18 +107,15 @@ const AuthForm = () => {
         );
         await sendEmailVerification(userCredential.user);
         setIsLoading(false);
-        router.push("/verify-email");
+        router.push("/auth/verify-email");
       }
       reset();
     } catch (error) {
-      setError(error.message);
+      console.error("Auth error:", error);
+      setIsLoading(false);
+      const errorMessage = getAuthErrorMessage(error.code);
+      setError(errorMessage);
     }
-  };
-
-  const toggleMode = () => {
-    setIsLogin(!isLogin);
-    setError(null);
-    reset();
   };
 
   return (
@@ -123,41 +132,62 @@ const AuthForm = () => {
       >
         {!isLogin && (
           <>
-            <input
-              type="text"
-              placeholder="First Name"
-              className={`p-2 border rounded ${errors.firstName ? "border-red-500" : "border-gray-300"}`}
-              {...register("firstName")}
-            />
-            {errors.firstName && (
-              <p className="text-red-500 text-sm">{errors.firstName.message}</p>
-            )}
-            <input
-              type="text"
-              placeholder="Last Name"
-              className={`p-2 border rounded ${errors.lastName ? "border-red-500" : "border-gray-300"}`}
-              {...register("lastName")}
-            />
-            {errors.lastName && (
-              <p className="text-red-500 text-sm">{errors.lastName.message}</p>
-            )}
-            <input
-              type="text"
-              placeholder="Username"
-              className={`p-2 border rounded ${errors.username ? "border-red-500" : "border-gray-300"}`}
-              {...register("username")}
-            />
-            {errors.username && (
-              <p className="text-red-500 text-sm">{errors.username.message}</p>
-            )}
+            <div>
+              <input
+                type="text"
+                placeholder="First Name"
+                {...register("firstName")}
+                className={`p-2 border rounded w-full ${
+                  errors.firstName ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.firstName && (
+                <p className="text-red-500 text-sm">
+                  {errors.firstName.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <input
+                type="text"
+                placeholder="Last Name"
+                {...register("lastName")}
+                className={`p-2 border rounded w-full ${
+                  errors.lastName ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.lastName && (
+                <p className="text-red-500 text-sm">
+                  {errors.lastName.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <input
+                type="text"
+                placeholder="Username"
+                {...register("username")}
+                className={`p-2 border rounded w-full ${
+                  errors.username ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.username && (
+                <p className="text-red-500 text-sm">
+                  {errors.username.message}
+                </p>
+              )}
+            </div>
+
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search your course"
+                {...register("course")}
                 className={`p-2 border rounded w-full ${
                   errors.course ? "border-red-500" : "border-gray-300"
                 }`}
-                {...register("course")}
                 onFocus={() => setShowCourseSuggestions(true)}
                 onBlur={() =>
                   setTimeout(() => setShowCourseSuggestions(false), 200)
@@ -185,36 +215,46 @@ const AuthForm = () => {
                   )}
                 </div>
               )}
+              {errors.course && (
+                <p className="text-red-500 text-sm">{errors.course.message}</p>
+              )}
             </div>
-            {errors.course && (
-              <p className="text-red-500 text-sm">{errors.course.message}</p>
-            )}
           </>
         )}
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          className={`p-2 border rounded ${errors.email ? "border-red-500" : "border-gray-300"}`}
-          {...register("email")}
-        />
-        {errors.email && (
-          <p className="text-red-500 text-sm">{errors.email.message}</p>
-        )}
+        <div>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            {...register("email")}
+            className={`p-2 border rounded w-full ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
+        </div>
 
-        <input
-          type="password"
-          placeholder="Enter your password"
-          className={`p-2 border rounded ${errors.password ? "border-red-500" : "border-gray-300"}`}
-          {...register("password")}
-        />
-        {errors.password && (
-          <p className="text-red-500 text-sm">{errors.password.message}</p>
-        )}
+        <div>
+          <input
+            type="password"
+            placeholder="Enter your password"
+            autoComplete={isLogin ? "current-password" : "new-password"}
+            {...register("password")}
+            className={`p-2 border rounded w-full ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
+        </div>
 
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors"
+          disabled={isLoading}
+          className="bg-primary text-white p-2 rounded hover:bg-primary-light transition-colors disabled:bg-gray-400"
         >
           {isLoading ? "Loading..." : isLogin ? "Login" : "Sign up"}
         </button>
@@ -222,7 +262,11 @@ const AuthForm = () => {
 
       <button
         className="mt-4 text-blue-600 hover:text-blue-800 underline"
-        onClick={toggleMode}
+        onClick={() => {
+          setIsLogin(!isLogin);
+          setError(null);
+          reset();
+        }}
       >
         {isLogin
           ? "Need an account? Sign up"
