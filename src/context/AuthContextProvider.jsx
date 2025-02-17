@@ -15,12 +15,19 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        await reload(currentUser);
-        if (!currentUser.emailVerified) {
-          setUser(null);
-          router.push("/auth/verify-email");
-        } else {
+        try {
+          await reload(currentUser);
           setUser(currentUser);
+
+          // Add routing logic here
+          if (!currentUser.emailVerified) {
+            router.push("/auth/verify-email");
+          } else {
+            router.push("/auth/profile-setup");
+          }
+        } catch (error) {
+          console.error("Error reloading user:", error);
+          setUser(null);
         }
       } else {
         setUser(null);
@@ -32,8 +39,13 @@ export const AuthProvider = ({ children }) => {
   }, [router]);
 
   const logout = async () => {
-    await signOut(auth);
-    router.push("/auth");
+    try {
+      await signOut(auth);
+      setUser(null);
+      router.push("/auth");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   return (

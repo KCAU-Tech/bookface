@@ -29,7 +29,7 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center m-4">
         <div className="bg-white p-12 rounded-lg shadow-lg">
           <h1 className="text-4xl font-bold">Hello student {studentId}</h1>
           <h1 className="text-3xl">Welcome to Bookface</h1>
