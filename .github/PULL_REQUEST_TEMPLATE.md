@@ -1,7 +1,5 @@
 # 📌 Pull Request Title (Brief Title)
 
-## 🔥 Description
-
 <!-- Provide a brief description of what this PR does. -->
 
 ## ✅ Checklist
@@ -15,8 +13,4 @@
 
 ## 📝 What Changed?
 
-<!-- Describe the major changes in this PR. Example: -->
-
-- Added `LoginScreen` UI
-- Integrated API for authentication
-- Fixed navigation issue on sign-out
+<!-- Describe the major changes in this PR. Be as detailed as possible. -->
