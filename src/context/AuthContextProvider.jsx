@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
           if (!currentUser.emailVerified) {
             router.push("/auth/verify-email");
           } else {
-            router.push("/auth/profile-setup");
+            router.push("/");
           }
         } catch (error) {
           console.error("Error reloading user:", error);
