@@ -4,7 +4,7 @@ import React from "react";
 const ProfilePage = () => {
   return (
     <ProtectedRoute>
-      <div>Profile Page</div>
+      <div>Profile Pagesss</div>
     </ProtectedRoute>
   );
 };
