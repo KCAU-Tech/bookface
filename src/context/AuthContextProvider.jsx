@@ -19,11 +19,14 @@ export const AuthProvider = ({ children }) => {
           await reload(currentUser);
           setUser(currentUser);
 
-          // Add routing logic here
           if (!currentUser.emailVerified) {
             router.push("/auth/verify-email");
           } else {
-            router.push("/");
+            // Only redirect to home if we're on the auth page
+            const currentPath = window.location.pathname;
+            if (currentPath.startsWith('/auth')) {
+              router.push("/");
+            }
           }
         } catch (error) {
           console.error("Error reloading user:", error);
@@ -31,6 +34,11 @@ export const AuthProvider = ({ children }) => {
         }
       } else {
         setUser(null);
+        // Redirect to auth page if not already there
+        const currentPath = window.location.pathname;
+        if (!currentPath.startsWith('/auth')) {
+          router.push("/auth");
+        }
       }
       setLoading(false);
     });
