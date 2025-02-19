@@ -19,7 +19,7 @@ const AuthPageLayout = ({ children }) => {
         <main className="min-h-screen flex flex-col">
           {/* Navbar is removed for the auth page */}
           {children}
-          <footer className="text-center py-4 bg-gray-200 mt-auto">
+          <footer className="text-center py-4 mt-auto">
             <p className="text-sm text-gray-600">
               Made with <span className="text-red-500 text-xl">❤️</span> by KCAU
               University Tech Club
