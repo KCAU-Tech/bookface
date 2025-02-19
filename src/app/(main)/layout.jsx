@@ -1,4 +1,6 @@
-import "./globals.css";
+import "../globals.css";
+import Navbar from "@/components/Navbar";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import { AuthProvider } from "@/context/AuthContextProvider";
 import { Lexend } from "next/font/google";
 
@@ -12,12 +14,13 @@ export const metadata = {
   description: "KCAU Social Media app",
 };
 
-export default function RootLayout({ children }) {
+export default function MainLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={lexend.className}>
-        <AuthProvider>{children}</AuthProvider>
-      </body>
-    </html>
+    <AuthProvider>
+      <ProtectedRoute>
+        <Navbar />
+        {children}
+      </ProtectedRoute>
+    </AuthProvider>
   );
 }

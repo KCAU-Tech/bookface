@@ -121,7 +121,7 @@ const AuthForm = () => {
   return (
     <div className="flex flex-col items-center justify-center p-6">
       <h2 className="text-2xl font-semibold mb-4">
-        {isLogin ? "Login" : "Sign up"}
+        {isLogin ? "Login" : "Join Bookface"}
       </h2>
 
       {error && <p className="text-red-500 mb-2">{error}</p>}
@@ -271,6 +271,15 @@ const AuthForm = () => {
         {isLogin
           ? "Need an account? Sign up"
           : "Already have an account? Login"}
+      </button>
+
+      <button
+        className="mt-4 text-blue-600 hover:text-blue-800 underline"
+        onClick={() => {
+          router.push("#");
+        }}
+      >
+        {isLogin ? "Forgotten password?" : ""}
       </button>
     </div>
   );
