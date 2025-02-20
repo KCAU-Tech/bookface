@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, reload } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { getDocument } from "@/utils/firestore";
 
 const AuthContext = createContext(null);
 
@@ -22,10 +23,20 @@ export const AuthProvider = ({ children }) => {
           if (!currentUser.emailVerified) {
             router.push("/auth/verify-email");
           } else {
-            // Only redirect to home if we're on the auth page
+            // Check profile setup status in Firestore
+            const userDoc = await getDocument("users", currentUser.uid);
+            console.log(userDoc);
+            const userData = userDoc?.data;
+            const profileSetup = userData?.profileSetup;
+
+            // Only redirect to home if we're on an auth page (except verify-email and profile-setup)
             const currentPath = window.location.pathname;
-            if (currentPath.startsWith('/auth')) {
-              router.push("/");
+            if (currentPath.startsWith("/auth")) {
+              if (!profileSetup) {
+                router.push("/auth/profile-setup");
+              } else {
+                router.push("/");
+              }
             }
           }
         } catch (error) {
@@ -36,7 +47,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         // Redirect to auth page if not already there
         const currentPath = window.location.pathname;
-        if (!currentPath.startsWith('/auth')) {
+        if (!currentPath.startsWith("/auth")) {
           router.push("/auth");
         }
       }
@@ -48,11 +59,16 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
+      // First set loading to true to prevent any redirects from onAuthStateChanged
+      setLoading(true);
       await signOut(auth);
       setUser(null);
-      router.push("/auth");
+      // Navigate after state is cleared
+      router.replace("/auth");
     } catch (error) {
       console.error("Error signing out:", error);
+    } finally {
+      setLoading(false);
     }
   };
 

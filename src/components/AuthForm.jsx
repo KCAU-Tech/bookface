@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContextProvider";
 import { courses } from "@/utils/kcauCourses";
 import { getAuthErrorMessage } from "@/utils/authErrors";
+import { setDocument } from "@/utils/firestore";
 
 const authSchema = z.object({
   email: z
@@ -105,6 +106,14 @@ const AuthForm = () => {
           data.email,
           data.password
         );
+        await setDocument("users", userCredential.user.uid, {
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          username: data.username.toLowerCase(),
+          course: data.course,
+          profileSetup: false,
+        });
         await sendEmailVerification(userCredential.user);
         setIsLoading(false);
         router.push("/auth/verify-email");

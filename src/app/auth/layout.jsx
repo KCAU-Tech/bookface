@@ -14,20 +14,15 @@ export const metadata = {
 
 const AuthPageLayout = ({ children }) => {
   return (
-    <html lang="en">
-      <body className={lexend.className}>
-        <main className="min-h-screen flex flex-col">
-          {/* Navbar is removed for the auth page */}
-          {children}
-          <footer className="text-center py-4 mt-auto">
-            <p className="text-sm text-gray-600">
-              Made with <span className="text-red-500 text-xl">❤️</span> by KCAU
-              University Tech Club
-            </p>
-          </footer>
-        </main>
-      </body>
-    </html>
+    <main className="h-full flex flex-col justify-between">
+      <div>{children}</div>
+      <footer className="text-center py-4">
+        <p className="text-sm text-gray-600">
+          Made with <span className="text-red-500 text-xl">❤️</span> by KCAU
+          University Tech Club
+        </p>
+      </footer>
+    </main>
   );
 };
 

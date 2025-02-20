@@ -5,6 +5,7 @@ import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContextProvider";
 import { reload } from "firebase/auth";
+import "../../globals.css";
 
 const VerifyEmailPage = () => {
   const { user, logout } = useAuth();
@@ -34,7 +35,12 @@ const VerifyEmailPage = () => {
     return () => clearInterval(interval);
   }, [user, router]);
 
-  if (!user && loading) return <div>Loading...</div>;
+  if (!user && loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="loader"></div>
+      </div>
+    );
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] mx-4 sm:mx-0">
