@@ -16,11 +16,3 @@ labels: enhancement
 ## 📝 Proposed Solution
 
 <!-- Describe how you plan to implement this feature. -->
-
-## 🎨 UI Mockups (if applicable)
-
-<!-- Attach UI mockups, Figma designs, or wireframes. -->
-
-## 🎯 Related Github Issues
-
-<!-- Link related Github issues if applicable. -->
