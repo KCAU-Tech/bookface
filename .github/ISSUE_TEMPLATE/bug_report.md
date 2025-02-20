@@ -26,7 +26,3 @@ labels: bug
 ## 🛠 Possible Fix
 
 <!-- Suggest any ideas for fixing this bug, if possible. -->
-
-## 🎯 Related Github Issues
-
-<!-- Link related Github issues here if applicable. -->
