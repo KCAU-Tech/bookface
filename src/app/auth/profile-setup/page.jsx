@@ -67,7 +67,7 @@ const ProfileSetupPage = () => {
         throw new Error(result.error || "Failed to update profile");
       }
 
-      await router.push("/");
+      await router.replace("/");
     } catch (error) {
       console.error("Profile setup error:", error);
       setError(error.message || "Something went wrong. Please try again.");

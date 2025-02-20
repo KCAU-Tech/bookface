@@ -8,13 +8,35 @@ import { getDocument } from "@/utils/firestore";
 
 const AuthContext = createContext(null);
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
+  const getFirestoreData = async (userId, retryCount = 0) => {
+    try {
+      const userDoc = await getDocument("users", userId);
+      return userDoc?.data;
+    } catch (error) {
+      console.error(`Firestore fetch attempt ${retryCount + 1} failed:`, error);
+      if (retryCount < MAX_RETRIES) {
+        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+        return getFirestoreData(userId, retryCount + 1);
+      }
+      throw error;
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    let mounted = true;
+
+    const handleUserState = async (currentUser) => {
+      if (!mounted) return;
+
       if (currentUser) {
         try {
           await reload(currentUser);
@@ -22,58 +44,60 @@ export const AuthProvider = ({ children }) => {
 
           if (!currentUser.emailVerified) {
             router.push("/auth/verify-email");
-          } else {
-            // Check profile setup status in Firestore
-            const userDoc = await getDocument("users", currentUser.uid);
-            console.log(userDoc);
-            const userData = userDoc?.data;
-            const profileSetup = userData?.profileSetup;
+            return;
+          }
 
-            // Only redirect to home if we're on an auth page (except verify-email and profile-setup)
-            const currentPath = window.location.pathname;
-            if (currentPath.startsWith("/auth")) {
-              if (!profileSetup) {
-                router.push("/auth/profile-setup");
-              } else {
-                router.push("/");
-              }
+          // Get user data with retry mechanism
+          const userData = await getFirestoreData(currentUser.uid);
+          const profileSetup = userData?.profileSetup;
+
+          const currentPath = window.location.pathname;
+          if (currentPath.startsWith("/auth")) {
+            if (!profileSetup) {
+              router.push("/auth/profile-setup");
+            } else {
+              router.push("/");
             }
           }
         } catch (error) {
-          console.error("Error reloading user:", error);
+          console.error("Error in auth state handling:", error);
+          setError(error);
           setUser(null);
         }
       } else {
         setUser(null);
-        // Redirect to auth page if not already there
         const currentPath = window.location.pathname;
         if (!currentPath.startsWith("/auth")) {
           router.push("/auth");
         }
       }
       setLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    const unsubscribe = onAuthStateChanged(auth, handleUserState);
+
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
   }, [router]);
 
   const logout = async () => {
     try {
-      // First set loading to true to prevent any redirects from onAuthStateChanged
       setLoading(true);
       await signOut(auth);
       setUser(null);
-      // Navigate after state is cleared
       router.replace("/auth");
     } catch (error) {
       console.error("Error signing out:", error);
+      setError(error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, error, logout }}>
       {children}
     </AuthContext.Provider>
   );

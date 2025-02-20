@@ -59,3 +59,15 @@ export async function getDocument(collectionName, docId) {
     return { error: error.message, success: false };
   }
 }
+
+// delete document
+export async function deleteDocument(collectionName, docId) {
+  try {
+    const docRef = doc(db, collectionName, docId);
+    await deleteDoc(docRef);
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    return { error: error.message, success: false };
+  }
+}
