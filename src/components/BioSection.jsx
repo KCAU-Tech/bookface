@@ -2,8 +2,7 @@
 import React, { useState } from "react";
 import { forbiddenWords } from "../utils/forbiddenWords";
 
-const BioSection = () => {
-  const [bio, setBio] = useState("");
+const BioSection = ({ bio, onBioChange }) => {
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
@@ -13,7 +12,7 @@ const BioSection = () => {
       setError("No bad words allowed");
     } else {
       setError(null);
-      setBio(input);
+      onBioChange(input);
     }
   };
 

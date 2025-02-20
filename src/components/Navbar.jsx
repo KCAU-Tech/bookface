@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, Users, Calendar, ShoppingBag, Bell } from "lucide-react";
@@ -14,6 +14,7 @@ import { CgProfile } from "react-icons/cg";
 import { useAuth } from "@/context/AuthContextProvider";
 import { Lexend_Exa } from "next/font/google";
 import Image from "next/image";
+import { getDocument } from "@/utils/firestore";
 
 const exa = Lexend_Exa({
   subsets: ["latin"],
@@ -22,20 +23,49 @@ const exa = Lexend_Exa({
 
 const navbarLogoStyle = `${exa.className} text-white select-none text-2xl`;
 
+const ProfileImage = ({ userData, userEmail }) => {
+  return userData?.photoURL?.url ? (
+    <Image
+      src={userData.photoURL.url}
+      alt="Profile"
+      width={40}
+      height={40}
+      className="object-cover"
+      loading="lazy"
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSEkMjU1LS0yMi4qQEE4OD5BPjIuMT5HR0pLS0pHR0dHR0dHR0dHR0f/2wBDARAVFhgYFhsYGBsnISAhJ00nJycnTU1HR0dHR01HR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0f/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAb/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+    />
+  ) : (
+    <div className="w-full h-full flex items-center justify-center text-primary">
+      {userEmail?.[0]?.toUpperCase() || "U"}
+    </div>
+  );
+};
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
+  const [userData, setUserData] = useState(null);
   const pathname = usePathname();
   const [hasNotifications, setHasNotifications] = useState(true);
   const [notificationCount, setNotificationCount] = useState(3);
 
   const userEmail = user?.email;
-  const studentId = userEmail?.split("@")[0];
 
-  const handleLogOut = async () => {
-    await logout();
-    setIsOpen(false);
-  };
+  useEffect(() => {
+    if (user) {
+      const getUserDocument = async (user) => {
+        try {
+          const result = await getDocument("users", user.uid);
+          setUserData(result.data);
+        } catch (error) {
+          console.error("Error fetching function:", error);
+        }
+      };
+
+      getUserDocument(user);
+    }
+  }, [user]);
 
   const isActiveRoute = (route) => pathname === route;
 
@@ -47,6 +77,7 @@ export default function Navbar() {
           href="/"
           className={navbarLogoStyle}
           onClick={() => setIsOpen(false)}
+          prefetch={false}
         >
           Bookface
         </Link>
@@ -57,6 +88,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center justify-center space-x-8">
               <Link
                 href="/"
+                prefetch={true}
                 className={`p-2 rounded-lg transition-colors duration-200 ${
                   isActiveRoute("/")
                     ? "text-secondary hover:text-secondary hover:bg-primary-dark"
@@ -71,6 +103,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/friends"
+                prefetch={true}
                 className={`p-2 rounded-lg transition-colors duration-200 ${
                   isActiveRoute("/friends")
                     ? "text-secondary hover:text-secondary hover:bg-primary-dark"
@@ -85,6 +118,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/groups"
+                prefetch={true}
                 className={`p-2 rounded-lg transition-colors duration-200 ${
                   isActiveRoute("/groups")
                     ? "text-secondary hover:text-secondary hover:bg-primary-dark"
@@ -113,6 +147,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/marketplace"
+                prefetch={true}
                 className={`p-2 rounded-lg transition-colors duration-200 ${
                   isActiveRoute("/marketplace")
                     ? "text-secondary hover:text-secondary hover:bg-primary-dark"
@@ -134,9 +169,7 @@ export default function Navbar() {
                   <Bell size={24} />
                   {hasNotifications && (
                     <>
-                      {/* Notification dot */}
                       <span className="absolute top-1 right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-                      {/* Optional: Notification counter */}
                       {notificationCount > 0 && (
                         <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center text-xs">
                           {notificationCount}
@@ -149,20 +182,9 @@ export default function Navbar() {
               <Link
                 className="w-10 h-10 rounded-full overflow-hidden bg-gray-300"
                 href="/profile"
+                prefetch={true}
               >
-                {user?.photoURL ? (
-                  <Image
-                    src={user.photoURL}
-                    alt="Profile"
-                    width={40}
-                    height={40}
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-primary">
-                    {userEmail?.[0]?.toUpperCase() || "U"}
-                  </div>
-                )}
+                <ProfileImage userData={userData} userEmail={userEmail} />
               </Link>
             </div>
           </>
