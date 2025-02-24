@@ -1,9 +1,9 @@
 // utils/storage.js
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { storage } from "@/lib/firebase";
 
 // Simplified storage path structure
-const bookfaceMediaStorage = {
+export const bookfaceMediaStorage = {
   // User profile
   users: {
     profile: (userId) => `users/${userId}/profile/avatar.jpg`,
