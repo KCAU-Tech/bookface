@@ -60,7 +60,7 @@ const ProfileSetupPage = () => {
       const result = await updateDocument("users", user.uid, {
         bio: bio,
         interests: selectedInterests,
-        profileSetupCompleted: true,
+        profileSetup: true,
       });
 
       if (!result.success) {

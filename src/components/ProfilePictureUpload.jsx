@@ -15,9 +15,8 @@ const ProfilePictureUpload = () => {
       try {
         const userDoc = await getDocument("users", user.uid);
         setUserData(userDoc);
-
-        if (userDoc.data.photoURL) {
-          setPreview(userDoc.data.photoURL.url);
+        if (userDoc?.data?.photoURL) {
+          setPreview(userDoc.data.photoURL);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -86,8 +85,8 @@ const ProfilePictureUpload = () => {
         const { blob, preview } = await processImage(file);
 
         setPreview(preview);
-
-        const existingPhotoURL = userData?.data.photoURL?.url;
+        
+        const existingPhotoURL = userData?.data?.photoURL;
         if (existingPhotoURL) {
           const path = bookfaceMediaStorage.users.profile(user.uid);
           if (existingPhotoURL.startsWith(path)) {
@@ -101,11 +100,7 @@ const ProfilePictureUpload = () => {
         );
 
         const updatedUserData = await updateDocument("users", user.uid, {
-          photoURL: {
-            url: downloadURL,
-            path: `users/${user.uid}/profile/avatar.jpg`,
-            success: true,
-          },
+          photoURL: downloadURL.url,
         });
 
         setUserData(updatedUserData);
@@ -124,9 +119,9 @@ const ProfilePictureUpload = () => {
       </div>
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="relative w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full bg-gray-100 overflow-hidden">
-          {userData?.data.photoURL?.url ? (
+          {userData?.data?.photoURL ? (
             <img
-              src={userData.data.photoURL.url}
+              src={userData?.data?.photoURL}
               alt="Profile"
               className="w-full h-full object-cover"
             />
@@ -160,7 +155,7 @@ const ProfilePictureUpload = () => {
         >
           {processing
             ? "Processing..."
-            : userData?.data.photoURL?.url || preview
+            : userData?.data?.photoURL || preview
               ? "Change profile photo"
               : "Upload Photo"}
         </label>

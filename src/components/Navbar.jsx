@@ -24,9 +24,9 @@ const exa = Lexend_Exa({
 const navbarLogoStyle = `${exa.className} text-white select-none text-2xl`;
 
 const ProfileImage = ({ userData, userEmail }) => {
-  return userData?.photoURL?.url ? (
+  return userData?.photoURL ? (
     <Image
-      src={userData.photoURL.url}
+      src={userData.photoURL}
       alt="Profile"
       width={40}
       height={40}
