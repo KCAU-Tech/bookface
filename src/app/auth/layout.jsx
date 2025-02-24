@@ -18,7 +18,7 @@ const AuthPageLayout = ({ children }) => {
       <div>{children}</div>
       <footer className="text-center py-4">
         <p className="text-sm text-gray-600">
-          Made with <span className="text-red-500 text-xl">❤️</span> by KCAU
+          Made with <span className="text-red-500 text-xl">❤️</span> by KCA
           University Tech Club
         </p>
       </footer>

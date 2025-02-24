@@ -18,7 +18,7 @@ const AuthenticationPage = () => {
             <span className={lexendExa.className}>Bookface</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-normal text-secondary max-w-md">
-            Bookface helps you connect with other KCAU students.
+            Bookface connects you with other KCAU students.
           </h2>
         </div>
 
