@@ -162,6 +162,7 @@ const AuthForm = () => {
           data.password
         );
         await setDocument("users", userCredential.user.uid, {
+          id: userCredential.user.uid,
           email: data.email,
           firstName: data.firstName,
           lastName: data.lastName,

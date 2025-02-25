@@ -4,15 +4,14 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContextProvider";
 import { getDocument } from "@/utils/firestore";
 import { useRouter } from "next/navigation";
+import Sidebar from "@/components/Sidebar";
+import NewsFeed from "@/components/NewsFeed";
+import RightSidebar from "@/components/RightSidebar";
 
 export default function Home() {
-  const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const router = useRouter();
-
-  const userEmail = user?.email;
-  const studentId = userEmail?.split("@")[0];
 
   useEffect(() => {
     if (!user) {
@@ -24,7 +23,6 @@ export default function Home() {
       try {
         setIsLoading(true);
         const result = await getDocument("users", userCredential.uid);
-        setData(result.data);
       } catch (error) {
         console.error("Error fetching function:", error);
       } finally {
@@ -33,24 +31,35 @@ export default function Home() {
     };
 
     getUserDocument(user);
-  }, [user]);
+  }, [user, router]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex items-center justify-center m-4">
-      <div className="bg-white p-12 rounded-lg shadow-lg">
-        {isLoading ? (
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-64 mb-4"></div>
-            <div className="h-6 bg-gray-200 rounded w-48"></div>
-          </div>
-        ) : (
-          <>
-            <h1 className="text-4xl font-bold">
-              Hello {data?.firstName || ""}
-            </h1>
-            <h1 className="text-3xl">Welcome to Bookface</h1>
-          </>
-        )}
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Left Sidebar - Sticky */}
+      <div className="hidden md:block md:w-1/4 lg:w-1/5 bg-white shadow sticky top-0 h-screen overflow-y-auto">
+        <div className="p-4">
+          <Sidebar />
+        </div>
+      </div>
+
+      {/* Main Content - Scrollable */}
+      <div className="flex-1 px-2 py-4 md:px-6 overflow-y-auto">
+        <NewsFeed />
+      </div>
+
+      {/* Right Sidebar - Sticky */}
+      <div className="hidden lg:block lg:w-1/4 sticky top-0 h-screen overflow-y-auto">
+        <div className="p-4">
+          <RightSidebar />
+        </div>
       </div>
     </div>
   );
