@@ -116,6 +116,7 @@ const ProfilePictureUpload = () => {
     <div className="flex flex-col sm:flex-row items-center justify-center gap-2 p-2 sm:p-4 md:p-6">
       <div className="flex-1 items-start justify-start">
         <h3 className="text-base sm:text-lg font-semibold">Profile Picture</h3>
+        <p className="text-sm text-gray-500">Optional - Upload a profile picture or skip for now</p>
       </div>
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="relative w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full bg-gray-100 overflow-hidden">

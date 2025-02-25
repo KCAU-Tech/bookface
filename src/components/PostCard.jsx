@@ -28,10 +28,10 @@ const PostCard = ({ post, user }) => {
 
     // Check if current user has liked this post
     const checkLiked = async () => {
-      if (!user?.uid) return;
+      if (!user?.id) return;
 
       try {
-        const result = await getDocument(`posts/${post.id}/likes`, user.uid);
+        const result = await getDocument(`posts/${post.id}/likes`, user.id);
         setIsLiked(result.success && result.data?.liked);
       } catch (error) {
         console.error("Error checking like status:", error);
@@ -40,10 +40,10 @@ const PostCard = ({ post, user }) => {
 
     fetchAuthor();
     checkLiked();
-  }, [post.userId, post.id, user?.uid]);
+  }, [post.userId, post.id, user?.id]);
 
   const handleLike = async () => {
-    if (!user?.uid) {
+    if (!user?.id) {
       alert("Please login to like posts");
       return;
     }
@@ -53,9 +53,9 @@ const PostCard = ({ post, user }) => {
       const newLikedStatus = !isLiked;
 
       // Set likes subcollection document for this user
-      await setDocument(`posts/${post.id}/likes`, user.uid, {
+      await setDocument(`posts/${post.id}/likes`, user.id, {
         liked: newLikedStatus,
-        userId: user.uid,
+        userId: user.id,
         timestamp: new Date().toISOString(),
       });
 

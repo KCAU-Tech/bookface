@@ -8,7 +8,7 @@ const PostActions = ({ isLiked, showComments, onLike, onCommentClick }) => {
       <button
         className={`flex items-center gap-2 px-4 py-1 rounded-lg flex-1 justify-center ${
           isLiked
-            ? "text-secondary bg-blue-50 hover:bg-gray-200"
+            ? "text-secondary hover:bg-gray-200"
             : "text-gray-600 hover:bg-gray-200 hover:text-secondary"
         }`}
         onClick={onLike}

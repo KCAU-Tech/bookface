@@ -15,6 +15,7 @@ import { useAuth } from "@/context/AuthContextProvider";
 import { courses } from "@/utils/kcauCourses";
 import { getAuthErrorMessage } from "@/utils/authErrors";
 import { getDocument, setDocument } from "@/utils/firestore";
+import { Eye, EyeOff } from "lucide-react";
 
 const loginSchema = z.object({
   email: z
@@ -49,11 +50,7 @@ const authSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(
-      /[^A-Za-z0-9]/,
-      "Password must contain at least one special character"
-    ),
+    .regex(/[0-9]/, "Password must contain at least one number"),
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -82,6 +79,7 @@ const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showCourseSuggestions, setShowCourseSuggestions] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -135,8 +133,8 @@ const AuthForm = () => {
     setError(null);
     setIsLoading(true);
 
-    try {
-      if (isLogin) {
+    if (isLogin) {
+      try {
         const userCredential = await signInWithEmailAndPassword(
           auth,
           data.email,
@@ -155,7 +153,15 @@ const AuthForm = () => {
             router.push("/auth/profile-setup");
           }
         }
-      } else {
+      } catch (error) {
+        console.error("Sign in error:", error);
+        setIsLoading(false);
+        const errorMessage = getAuthErrorMessage(error.code);
+        setError(errorMessage);
+        return;
+      }
+    } else {
+      try {
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           data.email,
@@ -173,14 +179,14 @@ const AuthForm = () => {
         await sendEmailVerification(userCredential.user);
         setIsLoading(false);
         router.push("/auth/verify-email");
+      } catch (error) {
+        console.error("Sign up error:", error);
+        setIsLoading(false);
+        const errorMessage = getAuthErrorMessage(error.code);
+        setError(errorMessage);
       }
-      reset();
-    } catch (error) {
-      console.error("Auth error:", error);
-      setIsLoading(false);
-      const errorMessage = getAuthErrorMessage(error.code);
-      setError(errorMessage);
     }
+    reset();
   };
 
   const switchForm = (formType) => {
@@ -333,9 +339,9 @@ const AuthForm = () => {
         </div>
 
         {!isForgotPassword && (
-          <div>
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               autoComplete={isLogin ? "current-password" : "new-password"}
               {...register("password")}
@@ -343,6 +349,17 @@ const AuthForm = () => {
                 errors.password ? "border-red-500" : "border-gray-300"
               }`}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}
