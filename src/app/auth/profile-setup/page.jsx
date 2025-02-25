@@ -57,11 +57,13 @@ const ProfileSetupPage = () => {
     setError("");
 
     try {
-      const result = await updateDocument("users", user.uid, {
+      const userData = {
         bio: bio,
         interests: selectedInterests,
         profileSetup: true,
-      });
+      };
+
+      const result = await updateDocument("users", user.uid, userData);
 
       if (!result.success) {
         throw new Error(result.error || "Failed to update profile");
