@@ -85,7 +85,7 @@ const ProfilePictureUpload = () => {
         const { blob, preview } = await processImage(file);
 
         setPreview(preview);
-        
+
         const existingPhotoURL = userData?.data?.photoURL;
         if (existingPhotoURL) {
           const path = bookfaceMediaStorage.users.profile(user.uid);

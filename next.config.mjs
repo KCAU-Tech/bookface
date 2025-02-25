@@ -8,11 +8,12 @@ const nextConfig = {
         port: '',
         pathname: '/v0/b/**',
       },
+      // For demo only. Not for production
       {
         protocol: 'https',
-        hostname: 'png.pngtree.com',
+        hostname: 'static1.makeuseofimages.com',
         port: '',
-        pathname: '/element_our/20190601/ourmid/pngtree-file-upload-icon-image_1344393.jpg',
+        pathname: '/wordpress/wp-content/uploads/2022/01/DIY-Workspace-unsplash.jpg',
       }
     ],
   },
